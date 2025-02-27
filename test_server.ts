@@ -26,16 +26,35 @@ serve(async (req) => {
 
   // Handle form submission
   if (url.pathname === "/submit" && req.method === "POST") {
-    const formData = await req.formData();
-    const csvData = formData.get("csv-data");
-    console.log("Received CSV Data:", csvData);
-    return new Response("CSV data received", { status: 200 });
+	/*
+    const formData   = await req.formData();
+	console.log(`DEBUG fromData attribute names -> ${JSON.stringify(Object.keys(formData))}`);
+    const groupData    = formData.get("groups");
+	const familyName = formData.get('family-name');
+	const givenName  = formData.get('given-name');
+	*/
+	const txt = await req.text();
+	console.log(`DEBUG txt from request -> ${txt}`);
+	const familyName = '';	
+	const givenName = '';
+	const groupData = '';
+
+	const src = `
+
+Family Name: ${familyName}
+ Given Name: ${givenName}
+ Group List:
+ 
+ ${groupData}
+`;
+	console.log(src);
+    return new Response(src, { status: 200 });
   }
 
   // Serve static files
   let filePath;
   if (url.pathname === "/") {
-    filePath = "index.html";
+    filePath = "default.html";
   } else {
     filePath = url.pathname.substring(1); // Remove leading slash
   }

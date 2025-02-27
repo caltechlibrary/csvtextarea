@@ -2,27 +2,27 @@ class CSVTextarea extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
-    this.columns = parseInt(this.getAttribute('cols')) || 3;
-    this.maxRows = parseInt(this.getAttribute('maxlength')) || Infinity;
-    this.rowsCount = parseInt(this.getAttribute('rows')) || 1; // Configurable initial rows
-    this.columnNames = this.getAttribute('column-names')?.split(',') || [];
-    this.showHeader = this.getAttribute('show-header') !== 'false';
-    this.placeholder = this.getAttribute('placeholder') || '';
-    this.readonly = this.hasAttribute('readonly');
-    this.disabled = this.hasAttribute('disabled');
-    this.rows = Array.from({ length: this.rowsCount }, () => Array(this.columns).fill('')); // Initialize with initial rows
-    this.csvVisible = false; // Track visibility state
-  }
 
-  connectedCallback() {
-    this.render();
-    if (this.placeholder && this.rows.length > 0 && this.columns > 0) {
-      this.rows[0][0] = this.placeholder;
+    // Set default values
+    this.rows = parseInt(this.getAttribute('rows')) || 1;
+    this.cols = parseInt(this.getAttribute('cols')) || 2;
+    this.maxRows = parseInt(this.getAttribute('max-rows')) || Infinity;
+    this.columnHeadings = this.getAttribute('column-headings')
+      ? this.getAttribute('column-headings').split(',')
+      : Array.from({ length: this.cols }, (_, i) => `column_${i + 1}`);
+
+    // Adjust columns based on column-headings if provided
+    if (this.columnHeadings.length > 0) {
+      this.cols = this.columnHeadings.length;
     }
-  }
 
-  render() {
-    this.shadowRoot.innerHTML = `
+    // Default showHeader to true unless explicitly set to false
+    this.showHeader = !this.hasAttribute('show-header') || this.getAttribute('show-header') !== 'false';
+    this.readOnly = this.hasAttribute('readonly');
+
+    // Attach the template to the shadow DOM
+    const template = document.createElement('template');
+    template.innerHTML = `
       <style>
         .csv-table {
           width: 100%;
@@ -33,140 +33,168 @@ class CSVTextarea extends HTMLElement {
           padding: 8px;
         }
         .csv-table th {
-          text-align: left;
           background-color: #f2f2f2;
+          text-align: left;
         }
-        .csv-table input {
-          width: 100%;
-          box-sizing: border-box;
-        }
-        .csv-button {
+        .add-row-button {
           margin-top: 10px;
-        }
-        #csv-output {
-          width: 100%;
-          height: 100px;
-          margin-top: 10px;
-          display: none; /* Initially hidden */
-        }
-        #fallback-textarea {
-          display: none; /* Hidden fallback textarea */
         }
       </style>
       <table class="csv-table">
-        <thead id="csv-header" class="csv-header"></thead>
-        <tbody id="csv-body" class="csv-body"></tbody>
+        <thead></thead>
+        <tbody></tbody>
       </table>
-      <button id="add-row" class="csv-button" type="button" ${this.disabled ? 'disabled' : ''}>Add Row</button>
-      <button id="view-csv" class="csv-button" type="button" ${this.disabled ? 'disabled' : ''}>View as CSV</button>
-      <textarea id="csv-output" readonly placeholder="CSV output will appear here..."></textarea>
-      <textarea id="fallback-textarea" name="csv-data"></textarea>
-      <noscript>
-        <textarea name="csv-data-noscript" placeholder="Enter CSV data here..."></textarea>
-      </noscript>
+      <button class="add-row-button" type="button">Add Row</button>
     `;
 
-    this.initializeTable();
-    this.setupEventListeners();
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+    this.table = this.shadowRoot.querySelector('.csv-table tbody');
+    this.headerRow = this.shadowRoot.querySelector('.csv-table thead');
+    this.addRowButton = this.shadowRoot.querySelector('.add-row-button');
+    this.addRowButton.addEventListener('click', this.addRow.bind(this));
+
+    this.render();
   }
 
-  initializeTable() {
-    const headerRow = this.shadowRoot.getElementById('csv-header');
-    if (this.showHeader) {
-      const tr = document.createElement('tr');
-      for (let i = 0; i < this.columns; i++) {
-        const th = document.createElement('th');
-        th.textContent = this.columnNames[i] || `Column ${i + 1}`;
-        tr.appendChild(th);
-      }
-      headerRow.appendChild(tr);
+  static get observedAttributes() {
+    return ['rows', 'cols', 'column-headings', 'show-header', 'max-rows', 'readonly'];
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    switch (name) {
+      case 'rows':
+        this.rows = parseInt(newValue) || 1;
+        break;
+      case 'cols':
+        this.cols = parseInt(newValue) || 2;
+        this.columnHeadings = this.getAttribute('column-headings')
+          ? this.getAttribute('column-headings').split(',')
+          : Array.from({ length: this.cols }, (_, i) => `column_${i + 1}`);
+        break;
+      case 'column-headings':
+        this.columnHeadings = newValue.split(',');
+        if (this.columnHeadings.length > 0) {
+          this.cols = this.columnHeadings.length;
+        }
+        break;
+      case 'show-header':
+        this.showHeader = newValue !== 'false'; // Show header unless explicitly set to 'false'
+        break;
+      case 'max-rows':
+        this.maxRows = parseInt(newValue) || Infinity;
+        break;
+      case 'readonly':
+        this.readOnly = this.hasAttribute('readonly');
+        break;
     }
-    this.renderTable();
+    this.render();
+    this.updateButtonVisibility();
+    this.updateHeaderVisibility();
   }
 
-  setupEventListeners() {
-    if (this.disabled) return;
+  connectedCallback() {
+    this.populateTableFromBody();
+    if (!this.readOnly) {
+      this.addEventListeners();
+    }
+    this.updateButtonVisibility();
+    this.updateHeaderVisibility();
+  }
 
-    const addRowButton = this.shadowRoot.getElementById('add-row');
-    addRowButton.addEventListener('click', () => this.addRow());
+  render() {
+    this.table.innerHTML = '';
 
-    const viewCSVButton = this.shadowRoot.getElementById('view-csv');
-    viewCSVButton.addEventListener('click', () => this.toggleCSVView());
+    // Render header row if showHeader is true
+    this.headerRow.innerHTML = '';
+    if (this.showHeader) {
+      const headerRow = this.headerRow.insertRow();
+      this.columnHeadings.forEach(heading => {
+        const th = document.createElement('th');
+        th.textContent = heading;
+        headerRow.appendChild(th);
+      });
+    }
+
+    for (let i = 0; i < this.rows; i++) {
+      const row = this.table.insertRow();
+      for (let j = 0; j < this.cols; j++) {
+        const cell = row.insertCell();
+        cell.contentEditable = !this.readOnly;
+        if (!this.readOnly) {
+          cell.addEventListener('input', this.handleCellChange.bind(this));
+        }
+      }
+    }
   }
 
   addRow() {
-    if (this.rows.length >= this.maxRows) {
-      alert('Maximum number of rows reached.');
-      return;
-    }
-    const row = Array(this.columns).fill('');
-    this.rows.push(row);
-    this.renderTable();
-    this.updateFallbackTextarea();
-
-    // Focus the first column of the new row
-    const lastRowIndex = this.rows.length - 1;
-    const firstCellInput = this.shadowRoot.querySelector(`#csv-body tr:nth-child(${lastRowIndex + 1}) td:first-child input`);
-    if (firstCellInput) {
-      firstCellInput.focus();
+    if (this.rows < this.maxRows) {
+      this.rows++;
+      const row = this.table.insertRow();
+      for (let j = 0; j < this.cols; j++) {
+        const cell = row.insertCell();
+        cell.contentEditable = !this.readOnly;
+        if (!this.readOnly) {
+          cell.addEventListener('input', this.handleCellChange.bind(this));
+        }
+      }
+      this.updateButtonVisibility();
     }
   }
 
-  renderTable() {
-    const tbody = this.shadowRoot.getElementById('csv-body');
-    tbody.innerHTML = '';
-    this.rows.forEach((row, rowIndex) => {
-      const tr = document.createElement('tr');
-      row.forEach((cell, colIndex) => {
-        const td = document.createElement('td');
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.value = cell;
-        input.readOnly = this.readonly;
-        input.disabled = this.disabled;
-        input.addEventListener('input', (event) => this.updateCell(rowIndex, colIndex, event.target.value));
-        td.appendChild(input);
-        tr.appendChild(td);
+  handleCellChange(event) {
+    this.updateBodyFromTable();
+    const changeEvent = new Event('change', { bubbles: true });
+    this.dispatchEvent(changeEvent);
+  }
+
+  populateTableFromBody() {
+    if (this.innerHTML.trim()) {
+      const rows = this.innerHTML.trim().split('\n');
+      this.rows = Math.min(rows.length, this.maxRows);
+      this.cols = Math.max(...rows.map(row => row.split(',').length), this.cols);
+      this.render();
+      rows.forEach((row, rowIndex) => {
+        const cells = row.split(',');
+        cells.forEach((cell, colIndex) => {
+          if (this.table.rows[rowIndex] && this.table.rows[rowIndex].cells[colIndex]) {
+            this.table.rows[rowIndex].cells[colIndex].textContent = cell.trim();
+          }
+        });
       });
-      tbody.appendChild(tr);
+    }
+  }
+
+  updateBodyFromTable() {
+    const rows = [];
+    for (let i = 0; i < this.table.rows.length; i++) {
+      const cells = [];
+      for (let j = 0; j < this.table.rows[i].cells.length; j++) {
+        cells.push(this.table.rows[i].cells[j].textContent.trim());
+      }
+      if (cells.some(cell => cell)) {
+        rows.push(cells.join(','));
+      }
+    }
+    this.innerHTML = rows.join('\n');
+  }
+
+  addEventListeners() {
+    this.table.addEventListener('keydown', event => {
+      if (event.ctrlKey && event.key === 'Enter') {
+        event.preventDefault();
+        this.addRow();
+      }
     });
   }
 
-  updateCell(rowIndex, colIndex, value) {
-    if (this.readonly || this.disabled) return;
-    this.rows[rowIndex][colIndex] = value;
-    this.updateFallbackTextarea();
+  updateButtonVisibility() {
+    this.addRowButton.style.display = !this.readOnly && this.rows < this.maxRows ? 'block' : 'none';
   }
 
-  updateFallbackTextarea() {
-    const fallbackTextarea = this.shadowRoot.getElementById('fallback-textarea');
-    fallbackTextarea.value = this.serializeToCSV();
-  }
-
-  serializeToCSV() {
-    const header = this.showHeader ? this.columnNames.join(',') + '\n' : '';
-    const rows = this.rows
-      .filter(row => row.some(cell => cell.trim() !== '')) // Filter out empty rows
-      .map(row =>
-        row.map(cell => {
-          if (/[,"\n]/.test(cell)) {
-            return `"${cell.replace(/"/g, '""')}"`;
-          }
-          return cell;
-        }).join(',')
-      ).join('\n');
-    return header + rows;
-  }
-
-  toggleCSVView() {
-    const csvOutput = this.shadowRoot.getElementById('csv-output');
-    csvOutput.value = this.serializeToCSV();
-    csvOutput.style.display = this.csvVisible ? 'none' : 'block';
-    this.csvVisible = !this.csvVisible; // Toggle visibility state
-  }
-
-  getCSVData() {
-    return this.serializeToCSV();
+  updateHeaderVisibility() {
+    this.headerRow.style.display = this.showHeader ? 'table-header-group' : 'none';
   }
 }
 
