@@ -1,0 +1,8 @@
+{
+  "tasks": {
+    "README.md": "cmt codemeta.json README.md",
+    "about.md": "cmt codemeta.json about.md",
+    "CITATION.cff": "cmt codemeta.json CITATION.cff",
+    "gen-code": "deno task about.md ; deno task CITATION.cff "
+  }
+}

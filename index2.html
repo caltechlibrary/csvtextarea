@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSV Textarea with Two Columns</title>
+</head>
+<body>
+  <h1>CSV Textarea with Two Columns</h1>
+  <form id="csv-form">
+    <label for="csv-data">Enter CSV Data:</label>
+    <textarea id="csv-data" name="csv-data" placeholder="Enter CSV data here..."></textarea>
+    <button type="submit">Submit</button>
+  </form>
+
+  <script type="module" src="csvtextarea.js" defer></script>
+  <script>
+document.addEventListener('DOMContentLoaded', function() {
+  const textarea = document.getElementById('csv-data');
+  if (textarea) {
+    // Create the CSVTextarea element
+    const csvTextarea = document.createElement('csv-textarea');
+    csvTextarea.setAttribute('cols', '2');
+    csvTextarea.setAttribute('maxlength', '10');
+    csvTextarea.setAttribute('rows', '3');
+    csvTextarea.setAttribute('column-names', 'group name,clgid');
+    csvTextarea.setAttribute('show-header', 'true');
+    csvTextarea.setAttribute('placeholder', 'Enter your data here...');
+
+    // Replace the textarea with the CSVTextarea component
+    textarea.parentNode.replaceChild(csvTextarea, textarea);
+  }
+
+  document.getElementById('csv-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const csvComponent = document.querySelector('csv-textarea');
+    const csvData = csvComponent.getCSVData();
+
+    const formData = new FormData();
+    formData.append('csv-data', csvData);
+
+    fetch('/submit', {
+      method: 'POST',
+      body: formData,
+    })
+    .then(response => response.text())
+    .then(result => {
+      console.log('Success:', result);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  });
+});
+  </script>
+</body>
+</html>

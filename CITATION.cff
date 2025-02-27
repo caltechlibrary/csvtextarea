@@ -1,0 +1,18 @@
+
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: csvtextarea
+abstract: "CSVTextarea is a web component written. It is intended to make it easy to include editable tabular data. The output of CSVTextarea is CSV, comma delimited values.The component is 
+intended to provide easy multi-value data entry for HTML 5 web forms."
+authors:
+  - family-names: Doiel
+    given-names: R. S.
+    orcid: https://orcid.org/0000-0003-0900-6903
+
+
+repository-code: "https://github.com/caltechlibrary/csv-textarea"
+version: 0.0.0
+date-released: 2025-02-26
+
+
