@@ -17,7 +17,7 @@ contributor:
 
 
 repository_code: https://github.com/caltechlibrary/csvtextarea
-version: 0.0.1
+version: 0.0.2
 
 
 programming_language:
@@ -25,15 +25,15 @@ programming_language:
   - HTML
 
 
-date_released: 2025-02-27
+date_released: 2025-02-28
 ---
 
 About this software
 ===================
 
-## csvtextarea 0.0.1
+## csvtextarea 0.0.2
 
-proof of concept
+working proof of concept. CSVTextarea now supports change event details for cells and the ability retrieve and set individual cell values.
 
 ### Authors
 

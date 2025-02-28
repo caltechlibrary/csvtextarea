@@ -18,8 +18,8 @@
     }
   ],
   "dateCreated": "2025-02-26",
-  "dateModified": "2025-02-27",
-  "datePublished": "2025-02-27",
+  "dateModified": "2025-02-28",
+  "datePublished": "2025-02-28",
   "description": "CSVTextarea is a web component designed to work with tabular data. When you embed the element in a form or web page the innerHTML of the element was be treated as CSV data and then \ndisplayed in a table structure. If you use the component in a web form you may need to handle encoding and submission through the form's submit event handling. CSVTextarea has many \nattributes in common with a traditional textarea and a textarea can be used as a fall back if JavaScript or components are not available.\n\nThe goal of this web component is to provide a simple mechanism for working with multivalued fields that easily map to a simple column and rows representation.",
   "funder": "Caltech Library",
   "name": "csvtextarea",
@@ -32,7 +32,7 @@
     "Deno >= 2.2",
     "Firefox >= 135.0"
   ],
-  "version": "0.0.1",
+  "version": "0.0.2",
   "developmentStatus": "concept",
-  "releaseNotes": "proof of concept"
+  "releaseNotes": "working proof of concept. CSVTextarea now supports change event details for cells and the ability retrieve and set individual cell values."
 }

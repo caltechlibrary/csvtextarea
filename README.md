@@ -1,6 +1,6 @@
 
 
-# csvtextarea 0.0.1
+# csvtextarea 0.0.2
 
 CSVTextarea is a web component designed to work with tabular data. When you embed the element in a form or web page the innerHTML of the element was be treated as CSV data and then 
 displayed in a table structure. If you use the component in a web form you may need to handle encoding and submission through the form's submit event handling. CSVTextarea has many 
@@ -10,11 +10,11 @@ The goal of this web component is to provide a simple mechanism for working with
 
 ## Release Notes
 
-- version: 0.0.1
+- version: 0.0.2
 - status: concept
-- released: 2025-02-27
+- released: 2025-02-28
 
-proof of concept
+working proof of concept. CSVTextarea now supports change event details for cells and the ability retrieve and set individual cell values.
 
 
 ### Authors
@@ -36,6 +36,10 @@ Uses: web browser
 
 ## Related resources
 
-- [user manual](user_manual.md)
+
+
+
+
+- [Installation](INSTALL.md)
 - [About](about.md)
 
