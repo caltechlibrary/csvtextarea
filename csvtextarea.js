@@ -125,7 +125,7 @@ class CSVTextarea extends HTMLElement {
         const cell = row.insertCell();
         cell.contentEditable = !this.readOnly;
         if (!this.readOnly) {
-          cell.addEventListener('blur', this.handleCellChange.bind(this));
+          cell.addEventListener('blur', this.handleCellChange.bind(this, i, j));
         }
       }
     }
@@ -139,7 +139,7 @@ class CSVTextarea extends HTMLElement {
         const cell = row.insertCell();
         cell.contentEditable = !this.readOnly;
         if (!this.readOnly) {
-          cell.addEventListener('blur', this.handleCellChange.bind(this));
+          cell.addEventListener('blur', this.handleCellChange.bind(this, this.rows - 1, j));
         }
       }
       // Focus on the first cell of the new row
@@ -150,9 +150,18 @@ class CSVTextarea extends HTMLElement {
     }
   }
 
-  handleCellChange(event) {
+  handleCellChange(rowIndex, colIndex, event) {
+    const columnName = this.columnHeadings[colIndex];
     this.updateBodyFromTable();
-    const changeEvent = new Event('change', { bubbles: true });
+    const changeEvent = new CustomEvent('change', {
+      bubbles: true,
+      detail: {
+        row: rowIndex,
+        col: colIndex,
+        columnName: columnName,
+        value: event.target.textContent.trim()
+      }
+    });
     this.dispatchEvent(changeEvent);
   }
 
@@ -233,6 +242,38 @@ class CSVTextarea extends HTMLElement {
     });
 
     return JSON.stringify(jsonArray, null, 2);
+  }
+
+  updateCell(rowIndex, col, value) {
+    let colIndex;
+    if (typeof col === 'string') {
+      // If col is a column name, find the corresponding index
+      colIndex = this.columnHeadings.indexOf(col);
+    } else if (typeof col === 'number') {
+      // If col is a column number, use it directly
+      colIndex = col;
+    }
+
+    if (colIndex !== -1 && this.table.rows[rowIndex] && this.table.rows[rowIndex].cells[colIndex]) {
+      this.table.rows[rowIndex].cells[colIndex].textContent = value;
+      this.updateBodyFromTable();
+    }
+  }
+
+  getCellValue(rowIndex, col) {
+    let colIndex;
+    if (typeof col === 'string') {
+      // If col is a column name, find the corresponding index
+      colIndex = this.columnHeadings.indexOf(col);
+    } else if (typeof col === 'number') {
+      // If col is a column number, use it directly
+      colIndex = col;
+    }
+
+    if (colIndex !== -1 && this.table.rows[rowIndex] && this.table.rows[rowIndex].cells[colIndex]) {
+      return this.table.rows[rowIndex].cells[colIndex].textContent.trim();
+    }
+    return null;
   }
 }
 

@@ -50,3 +50,8 @@
 - The web component needs to add the contents when the web form is encoded and sent to the web service.
 - The change event trigger for a cell should only happen when the cell looses focus
 - Add a toJSON function. Represent each row as an object with the attribute name matching the column heading and the value matching the cell value.
+- CSVTextarea needs to include cell column and row number in the change event.
+- The change event detail should include include column name, column number and row number in the change event.
+- There also needs to be a function to update a cell in the table given a column, row and value
+- The update cell function should allow the column name or column number in the column parameter
+- Add a function to retrieve a cell's value from the table given a column name or number, and a row number

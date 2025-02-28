@@ -105,6 +105,16 @@ looses focus</li>
 <li>Add a toJSON function. Represent each row as an object with the
 attribute name matching the column heading and the value matching the
 cell value.</li>
+<li>CSVTextarea needs to include cell column and row number in the
+change event.</li>
+<li>The change event detail should include include column name, column
+number and row number in the change event.</li>
+<li>There also needs to be a function to update a cell in the table
+given a column, row and value</li>
+<li>The update cell function should allow the column name or column
+number in the column parameter</li>
+<li>Add a function to retrieve a cell’s value from the table given a
+column name or number, and a row number</li>
 </ul>
 </section>
 </body>
