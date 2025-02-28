@@ -125,7 +125,7 @@ class CSVTextarea extends HTMLElement {
         const cell = row.insertCell();
         cell.contentEditable = !this.readOnly;
         if (!this.readOnly) {
-          cell.addEventListener('input', this.handleCellChange.bind(this));
+          cell.addEventListener('blur', this.handleCellChange.bind(this));
         }
       }
     }
@@ -139,7 +139,7 @@ class CSVTextarea extends HTMLElement {
         const cell = row.insertCell();
         cell.contentEditable = !this.readOnly;
         if (!this.readOnly) {
-          cell.addEventListener('input', this.handleCellChange.bind(this));
+          cell.addEventListener('blur', this.handleCellChange.bind(this));
         }
       }
       // Focus on the first cell of the new row
