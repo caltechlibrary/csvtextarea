@@ -30,7 +30,7 @@
 - The maximum of rows should be optionally configurable
 - If web component cannot be instantiated it should fallback to a plain textarea
 - The user should be able to add additional rows as needed up to any specified maximum
-- Adding a row show happen when you press crontrol enter in the last column of the last row
+- Adding a row show happen when you press shift enter in the last column of the last row
 - There should be a single button below the table that will to add a row to the table on click
 - The column headings, rows, columns and button should accepts CSS styling
 - showing the header row is optional, the default is to show it
@@ -45,3 +45,6 @@
 - The column headings should be down by default
 - Use an HTML template to structure the component
 - the HTML template should include the header row
+- when a row is added the focus should  go to the first cell of the added row
+- If a cell contains a comma then the value of the cell needs to be quoted in the CSV output
+- The web component needs to add the contents when the web form is encoded and sent to the web service.

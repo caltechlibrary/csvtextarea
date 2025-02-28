@@ -1,6 +1,6 @@
 {
   "tasks": {
-	"test": "deno run --allow-read --allow-net test_server.ts",
+	  "dev": "deno run --allow-read --allow-net server.ts",
     "README.md": "cmt codemeta.json README.md",
     "about.md": "cmt codemeta.json about.md",
     "CITATION.cff": "cmt codemeta.json CITATION.cff",

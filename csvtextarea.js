@@ -16,7 +16,7 @@ class CSVTextarea extends HTMLElement {
       this.cols = this.columnHeadings.length;
     }
 
-    // Default showHeader to true unless explicitly set to false
+    // Default to showing the header unless explicitly set to false
     this.showHeader = !this.hasAttribute('show-header') || this.getAttribute('show-header') !== 'false';
     this.readOnly = this.hasAttribute('readonly');
 
@@ -100,6 +100,9 @@ class CSVTextarea extends HTMLElement {
     }
     this.updateButtonVisibility();
     this.updateHeaderVisibility();
+
+    // Add event listener for form submission
+    this.closest('form').addEventListener('submit', this.handleFormSubmit.bind(this));
   }
 
   render() {
@@ -139,6 +142,10 @@ class CSVTextarea extends HTMLElement {
           cell.addEventListener('input', this.handleCellChange.bind(this));
         }
       }
+      // Focus on the first cell of the new row
+      if (row.cells[0]) {
+        row.cells[0].focus();
+      }
       this.updateButtonVisibility();
     }
   }
@@ -159,7 +166,7 @@ class CSVTextarea extends HTMLElement {
         const cells = row.split(',');
         cells.forEach((cell, colIndex) => {
           if (this.table.rows[rowIndex] && this.table.rows[rowIndex].cells[colIndex]) {
-            this.table.rows[rowIndex].cells[colIndex].textContent = cell.trim();
+            this.table.rows[rowIndex].cells[colIndex].textContent = cell.trim().replace(/^"|"$/g, '');
           }
         });
       });
@@ -171,7 +178,9 @@ class CSVTextarea extends HTMLElement {
     for (let i = 0; i < this.table.rows.length; i++) {
       const cells = [];
       for (let j = 0; j < this.table.rows[i].cells.length; j++) {
-        cells.push(this.table.rows[i].cells[j].textContent.trim());
+        const cellContent = this.table.rows[i].cells[j].textContent.trim();
+        // Quote the cell content if it contains a comma
+        cells.push(cellContent.includes(',') ? `"${cellContent}"` : cellContent);
       }
       if (cells.some(cell => cell)) {
         rows.push(cells.join(','));
@@ -182,7 +191,7 @@ class CSVTextarea extends HTMLElement {
 
   addEventListeners() {
     this.table.addEventListener('keydown', event => {
-      if (event.ctrlKey && event.key === 'Enter') {
+      if (event.shiftKey && event.key === 'Enter') {
         event.preventDefault();
         this.addRow();
       }
@@ -195,6 +204,35 @@ class CSVTextarea extends HTMLElement {
 
   updateHeaderVisibility() {
     this.headerRow.style.display = this.showHeader ? 'table-header-group' : 'none';
+  }
+
+  handleFormSubmit(event) {
+    // Add the CSV content to the form data
+    const formData = new FormData(event.target);
+    formData.append(this.getAttribute('name'), this.innerHTML);
+
+    // Log the form data for demonstration purposes
+    console.log('Form data submitted:', [...formData.entries()]);
+
+    // Optionally, you can prevent the default form submission and handle it via JavaScript
+    // event.preventDefault();
+  }
+
+  toJSON() {
+    const rows = this.innerHTML.trim().split('\n');
+    const jsonArray = [];
+
+    rows.forEach(row => {
+      const cells = row.split(',');
+      const rowObject = {};
+      cells.forEach((cell, index) => {
+        const cellContent = cell.trim().replace(/^"|"$/g, '');
+        rowObject[this.columnHeadings[index]] = cellContent;
+      });
+      jsonArray.push(rowObject);
+    });
+
+    return JSON.stringify(jsonArray, null, 2);
   }
 }
 
