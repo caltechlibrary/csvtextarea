@@ -36,6 +36,6 @@ Uses: web browser
 
 ## Related resources
 
-- [Installation](INSTALL.md)
+- [user manual](user_manual.md)
 - [About](about.md)
 
