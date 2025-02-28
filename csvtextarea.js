@@ -20,6 +20,9 @@ class CSVTextarea extends HTMLElement {
     this.showHeader = !this.hasAttribute('show-header') || this.getAttribute('show-header') !== 'false';
     this.readOnly = this.hasAttribute('readonly');
 
+    // Optional title attribute
+    this.title = this.getAttribute('title') || 'CSV Textarea';
+
     // Attach the template to the shadow DOM
     const template = document.createElement('template');
     template.innerHTML = `
@@ -41,6 +44,26 @@ class CSVTextarea extends HTMLElement {
           gap: 10px;
           margin-top: 10px;
         }
+        .info-icon {
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          cursor: pointer;
+        }
+        .tooltip {
+          display: none;
+          position: absolute;
+          top: 30px;
+          right: 10px;
+          background-color: #fff;
+          border: 1px solid #ddd;
+          padding: 10px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          z-index: 10;
+        }
+        .tooltip.visible {
+          display: block;
+        }
       </style>
       <table class="csv-table">
         <thead></thead>
@@ -48,7 +71,20 @@ class CSVTextarea extends HTMLElement {
       </table>
       <div class="button-container">
         <button class="add-row-button" type="button" aria-label="Press Shift+Enter to add row" title="Press Shift+Enter to add row">Add Row</button>
-        <button class="clean-up-button" type="button" aria-label="Press Shift+Delete to clean up empty rows" title="Press Shift+Delete to clean up empty rows">Clean Up</button>
+        <button class="clean-up-button" type="button" aria-label="Press Shift+Backspace to clean up empty rows" title="Press Shift+Backspace to clean up empty rows">Clean Up</button>
+      </div>
+      <span class="info-icon">ⓘ</span>
+      <div class="tooltip">
+        <h4>${this.getAttribute('name')}</h4>
+        <p>${this.title}</p>
+        <p><strong>Key Bindings:</strong></p>
+        <ul>
+          <li>Shift + Enter: Add a new row</li>
+          <li>Shift + Backspace: Clean up empty rows</li>
+          <li>Ctrl + A: Select all text in the current cell</li>
+          <li>Ctrl + Right Arrow: Select all text in the current row</li>
+          <li>Backspace: Delete selected text in each cell</li>
+        </ul>
       </div>
     `;
 
@@ -58,9 +94,12 @@ class CSVTextarea extends HTMLElement {
     this.headerRow = this.shadowRoot.querySelector('.csv-table thead');
     this.addRowButton = this.shadowRoot.querySelector('.add-row-button');
     this.cleanUpButton = this.shadowRoot.querySelector('.clean-up-button');
+    this.infoIcon = this.shadowRoot.querySelector('.info-icon');
+    this.tooltip = this.shadowRoot.querySelector('.tooltip');
 
     this.addRowButton.addEventListener('click', this.addRow.bind(this));
     this.cleanUpButton.addEventListener('click', this.cleanUp.bind(this));
+    this.infoIcon.addEventListener('click', this.toggleTooltip.bind(this));
 
     this.render();
   }
@@ -70,6 +109,7 @@ class CSVTextarea extends HTMLElement {
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
+    console.log(`Attribute changed: ${name}, oldValue: ${oldValue}, newValue: ${newValue}`);
     switch (name) {
       case 'rows':
         this.rows = parseInt(newValue) || 1;
@@ -95,6 +135,8 @@ class CSVTextarea extends HTMLElement {
       case 'readonly':
         this.readOnly = this.hasAttribute('readonly');
         break;
+      default:
+        console.warn(`Unhandled attribute change: ${name}`);
     }
     this.render();
     this.updateButtonVisibility();
@@ -211,7 +253,7 @@ class CSVTextarea extends HTMLElement {
       if (event.shiftKey && event.key === 'Enter') {
         event.preventDefault();
         this.addRow();
-      } else if (event.shiftKey && event.key === 'Delete') {
+      } else if (event.shiftKey && event.key === 'Backspace') {
         event.preventDefault();
         this.cleanUp();
       } else if (event.ctrlKey && event.key === 'a') {
@@ -345,6 +387,10 @@ class CSVTextarea extends HTMLElement {
     this.rows = this.table.rows.length;
     this.updateBodyFromTable();
     this.updateButtonVisibility();
+  }
+
+  toggleTooltip() {
+    this.tooltip.classList.toggle('visible');
   }
 }
 

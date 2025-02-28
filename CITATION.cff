@@ -15,7 +15,13 @@ authors:
 
 
 repository-code: "https://github.com/caltechlibrary/csvtextarea"
-version: 0.0.2
+version: 0.0.3
 date-released: 2025-02-28
 
+license-url: "https://caltechlibrary.github.io/csvtextarea/LICENSE"
+keywords:
+  - web component
+  - user interface
+  - html5
+  - JavaScript
 
