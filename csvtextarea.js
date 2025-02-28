@@ -43,18 +43,19 @@ class CSVTextarea extends HTMLElement {
           display: flex;
           gap: 10px;
           margin-top: 10px;
+          position: relative;
         }
         .info-icon {
           position: absolute;
-          top: 10px;
-          right: 10px;
+          top: 0;
+          right: 0;
           cursor: pointer;
         }
         .tooltip {
           display: none;
           position: absolute;
           top: 30px;
-          right: 10px;
+          right: 0;
           background-color: #fff;
           border: 1px solid #ddd;
           padding: 10px;
@@ -72,8 +73,8 @@ class CSVTextarea extends HTMLElement {
       <div class="button-container">
         <button class="add-row-button" type="button" aria-label="Press Shift+Enter to add row" title="Press Shift+Enter to add row">Add Row</button>
         <button class="clean-up-button" type="button" aria-label="Press Shift+Backspace to clean up empty rows" title="Press Shift+Backspace to clean up empty rows">Clean Up</button>
+        <span class="info-icon">ⓘ</span>
       </div>
-      <span class="info-icon">ⓘ</span>
       <div class="tooltip">
         <h4>${this.getAttribute('name')}</h4>
         <p>${this.title}</p>
