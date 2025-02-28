@@ -62,6 +62,7 @@ publish: build website .FORCE
 	./publish.bash
 
 clean:
+	-rm *.bak >/dev/null
 	@if [ -d dist ]; then rm -fR dist; fi
 	@if [ -d testout ]; then rm -fR testout; fi
 
