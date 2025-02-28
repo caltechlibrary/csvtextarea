@@ -1,7 +1,10 @@
 ---
 title: csvtextarea
-abstract: "CSVTextarea is a web component written. It is intended to make it easy to include editable tabular data. The output of CSVTextarea is CSV, comma delimited values.The component is 
-intended to provide easy multi-value data entry for HTML 5 web forms."
+abstract: "CSVTextarea is a web component designed to work with tabular data. When you embed the element in a form or web page the innerHTML of the element was be treated as CSV data and then 
+displayed in a table structure. If you use the component in a web form you may need to handle encoding and submission through the form&#x27;s submit event handling. CSVTextarea has many 
+attributes in common with a traditional textarea and a textarea can be used as a fall back if JavaScript or components are not available.
+
+The goal of this web component is to provide a simple mechanism for working with multivalued fields that easily map to a simple column and rows representation."
 authors:
   - family_name: Doiel
     given_name: R. S.
@@ -42,8 +45,11 @@ proof of concept
 
 
 
-CSVTextarea is a web component written. It is intended to make it easy to include editable tabular data. The output of CSVTextarea is CSV, comma delimited values.The component is 
-intended to provide easy multi-value data entry for HTML 5 web forms.
+CSVTextarea is a web component designed to work with tabular data. When you embed the element in a form or web page the innerHTML of the element was be treated as CSV data and then 
+displayed in a table structure. If you use the component in a web form you may need to handle encoding and submission through the form&#x27;s submit event handling. CSVTextarea has many 
+attributes in common with a traditional textarea and a textarea can be used as a fall back if JavaScript or components are not available.
+
+The goal of this web component is to provide a simple mechanism for working with multivalued fields that easily map to a simple column and rows representation.
 
 
 - GitHub: <https://github.com/caltechlibrary/csv-textarea>

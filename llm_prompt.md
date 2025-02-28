@@ -48,3 +48,5 @@
 - when a row is added the focus should  go to the first cell of the added row
 - If a cell contains a comma then the value of the cell needs to be quoted in the CSV output
 - The web component needs to add the contents when the web form is encoded and sent to the web service.
+- The change event trigger for a cell should only happen when the cell looses focus
+- Add a toJSON function. Represent each row as an object with the attribute name matching the column heading and the value matching the cell value.
