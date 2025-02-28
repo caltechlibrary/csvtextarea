@@ -34,5 +34,5 @@
   ],
   "version": "0.0.2",
   "developmentStatus": "concept",
-  "releaseNotes": "working proof of concept. CSVTextarea now supports change event details for cells and the ability retrieve and set individual cell values."
+  "releaseNotes": "working proof of concept. CSVTextarea now supports change event details for cells and the ability retrieve and set individual cell values. Several key combination can now be used to \nedit the table content. Ctrl-a in a cell will select the cell. Ctrl-Right Arrow will select a row. If you press the backspace key when you have text select the selected text will be \nremoved. The added clean up button now responds to shift+delete to cleanup the table."
 }

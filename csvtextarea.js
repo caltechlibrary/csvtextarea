@@ -36,7 +36,9 @@ class CSVTextarea extends HTMLElement {
           background-color: #f2f2f2;
           text-align: left;
         }
-        .add-row-button {
+        .button-container {
+          display: flex;
+          gap: 10px;
           margin-top: 10px;
         }
       </style>
@@ -44,7 +46,10 @@ class CSVTextarea extends HTMLElement {
         <thead></thead>
         <tbody></tbody>
       </table>
-      <button class="add-row-button" type="button">Add Row</button>
+      <div class="button-container">
+        <button class="add-row-button" type="button" aria-label="Press Shift+Enter to add row" title="Press Shift+Enter to add row">Add Row</button>
+        <button class="clean-up-button" type="button" aria-label="Press Shift+Delete to clean up empty rows" title="Press Shift+Delete to clean up empty rows">Clean Up</button>
+      </div>
     `;
 
     this.shadowRoot.appendChild(template.content.cloneNode(true));
@@ -52,7 +57,10 @@ class CSVTextarea extends HTMLElement {
     this.table = this.shadowRoot.querySelector('.csv-table tbody');
     this.headerRow = this.shadowRoot.querySelector('.csv-table thead');
     this.addRowButton = this.shadowRoot.querySelector('.add-row-button');
+    this.cleanUpButton = this.shadowRoot.querySelector('.clean-up-button');
+
     this.addRowButton.addEventListener('click', this.addRow.bind(this));
+    this.cleanUpButton.addEventListener('click', this.cleanUp.bind(this));
 
     this.render();
   }
@@ -203,12 +211,51 @@ class CSVTextarea extends HTMLElement {
       if (event.shiftKey && event.key === 'Enter') {
         event.preventDefault();
         this.addRow();
+      } else if (event.shiftKey && event.key === 'Delete') {
+        event.preventDefault();
+        this.cleanUp();
+      } else if (event.ctrlKey && event.key === 'a') {
+        event.preventDefault();
+        const cell = event.target;
+        if (cell.tagName === 'TD' || cell.tagName === 'TH') {
+          const range = document.createRange();
+          range.selectNodeContents(cell);
+          const selection = window.getSelection();
+          selection.removeAllRanges();
+          selection.addRange(range);
+        }
+      } else if (event.ctrlKey && event.key === 'ArrowRight') {
+        event.preventDefault();
+        const cell = event.target;
+        if (cell.tagName === 'TD' || cell.tagName === 'TH') {
+          const row = cell.parentNode;
+          const range = document.createRange();
+          range.selectNodeContents(row);
+          const selection = window.getSelection();
+          selection.removeAllRanges();
+          selection.addRange(range);
+        }
+      } else if (event.key === 'Backspace') {
+        const selection = window.getSelection();
+        if (selection.toString().trim() !== '') {
+          const cell = event.target;
+          if (cell.tagName === 'TD' || cell.tagName === 'TH') {
+            const row = cell.parentNode;
+            for (let i = 0; i < row.cells.length; i++) {
+              if (selection.containsNode(row.cells[i], true)) {
+                row.cells[i].textContent = '';
+              }
+            }
+            this.updateBodyFromTable();
+          }
+        }
       }
     });
   }
 
   updateButtonVisibility() {
     this.addRowButton.style.display = !this.readOnly && this.rows < this.maxRows ? 'block' : 'none';
+    this.cleanUpButton.style.display = !this.readOnly ? 'block' : 'none';
   }
 
   updateHeaderVisibility() {
@@ -244,7 +291,7 @@ class CSVTextarea extends HTMLElement {
     return JSON.stringify(jsonArray, null, 2);
   }
 
-  updateCell(rowIndex, col, value) {
+  setCellValue(rowIndex, col, value) {
     let colIndex;
     if (typeof col === 'string') {
       // If col is a column name, find the corresponding index
@@ -274,6 +321,30 @@ class CSVTextarea extends HTMLElement {
       return this.table.rows[rowIndex].cells[colIndex].textContent.trim();
     }
     return null;
+  }
+
+  cleanUp() {
+    // Remove rows where all cells are empty
+    const rowsToRemove = [];
+    for (let i = 0; i < this.table.rows.length; i++) {
+      const row = this.table.rows[i];
+      let isEmpty = true;
+      for (let j = 0; j < row.cells.length; j++) {
+        if (row.cells[j].textContent.trim() !== '') {
+          isEmpty = false;
+          break;
+        }
+      }
+      if (isEmpty) {
+        rowsToRemove.push(i);
+      }
+    }
+    rowsToRemove.reverse().forEach(index => {
+      this.table.deleteRow(index);
+    });
+    this.rows = this.table.rows.length;
+    this.updateBodyFromTable();
+    this.updateButtonVisibility();
   }
 }
 

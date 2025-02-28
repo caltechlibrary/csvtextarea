@@ -26,7 +26,7 @@
       const updateByNameButton = document.createElement('button');
       updateByNameButton.textContent = 'Update Cell (1, "Age") to "New Value"';
       updateByNameButton.addEventListener('click', () => {
-        csvTextarea.updateCell(1, 'Age', 'New Value');
+        csvTextarea.setCellValue(1, 'Age', 'New Value');
       });
       document.body.appendChild(updateByNameButton);
 
@@ -34,7 +34,7 @@
       const updateByNumberButton = document.createElement('button');
       updateByNumberButton.textContent = 'Update Cell (1, 2) to "Another Value"';
       updateByNumberButton.addEventListener('click', () => {
-        csvTextarea.updateCell(1, 2, 'Another Value');
+        csvTextarea.setCellValue(1, 2, 'Another Value');
       });
       document.body.appendChild(updateByNumberButton);
 
