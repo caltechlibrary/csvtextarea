@@ -17,7 +17,7 @@
 </ul>
 </nav>
 <section>
-<h1 id="csvtextarea-0.0.2">csvtextarea 0.0.2</h1>
+<h1 id="csvtextarea-0.0.3">csvtextarea 0.0.3</h1>
 <p>CSVTextarea is a web component designed to work with tabular data.
 When you embed the element in a form or web page the innerHTML of the
 element was be treated as CSV data and then displayed in a table
@@ -31,13 +31,17 @@ working with multivalued fields that easily map to a simple column and
 rows representation.</p>
 <h2 id="release-notes">Release Notes</h2>
 <ul>
-<li>version: 0.0.2</li>
-<li>status: concept</li>
+<li>version: 0.0.3</li>
+<li>status: wip</li>
 <li>released: 2025-02-28</li>
 </ul>
 <p>working proof of concept. CSVTextarea now supports change event
 details for cells and the ability retrieve and set individual cell
-values.</p>
+values. Several key combination can now be used to edit the table
+content. Ctrl-a in a cell will select the cell. Ctrl-Right Arrow will
+select a row. If you press the backspace key when you have text select
+the selected text will be removed. The added clean up button now
+responds to shift+delete to cleanup the table.</p>
 <h3 id="authors">Authors</h3>
 <ul>
 <li>Doiel, R. S.</li>
@@ -48,13 +52,16 @@ values.</p>
 </ul>
 <h2 id="software-requirements">Software Requirements</h2>
 <ul>
-<li>Deno &gt;= 2.2</li>
-<li>Firefox &gt;= 135.0</li>
+<li>HTML5-compatible browsers</li>
 </ul>
 <p>Uses: web browser</p>
 <h2 id="related-resources">Related resources</h2>
 <ul>
-<li><a href="INSTALL.html">Installation</a></li>
+<li><a
+href="https://github.com/caltechlibrary/csvtextarea/issues">Getting
+Help, Reporting bugs</a></li>
+<li><a
+href="https://caltechlibrary.github.io/csvtextarea/LICENSE">LICENSE</a></li>
 <li><a href="about.html">About</a></li>
 </ul>
 </section>
