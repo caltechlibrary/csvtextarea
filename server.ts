@@ -47,7 +47,7 @@ Family Name: ${familyName}
   // Serve static files
   let filePath;
   if (url.pathname === "/") {
-    filePath = "index.html";
+    filePath = "user_manual.html";
   } else {
     filePath = url.pathname.substring(1); // Remove leading slash
   }

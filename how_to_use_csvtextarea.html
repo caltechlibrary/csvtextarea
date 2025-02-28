@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <title>csvtextarea</title>
+    <link rel="stylesheet" href="/css/site.css">
+</head>
+<body>
+<nav>
+<ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="index.html">README</a></li>
+    <li><a href="LICENSE">LICENSE</a></li>
+    <li><a href="INSTALL.html">INSTALL</a></li>
+    <li><a href="user_manual.html">User Manual</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="search.html">Search</a></li>
+    <li><a href="https://github.com/caltechlibrary/csv-textarea">GitHub</a></li>
+</ul>
+</nav>
+<section>
+<h1 id="csvtextarea">CSVTextarea</h1>
+<p>CSVTextarea is a web component. It allows you to enter tabular data
+directly into a table and submit the results as CSV encoded content. The
+CSV encoded content is maintained in the innerHTML of the CSVTextarea.
+You can use a plain textarea embedded in noscript elements as a simple
+fallback. A “Add Row” button is include to add a row to the bottom of
+the element. When content is saved to the innerHTML all empty rows are
+ignored. Due to quirkness of froms if you use the web component you
+should create an event handler to handle the submission. This can make
+sure the CSV content in the element is properly obtained and available
+to be added with the form submission. When each cell looses focus the
+element will be checked for changes. If the cell change then a change
+event will be emitted. You can then get the current state of the CSV
+content.</p>
+<h2 id="features">Features</h2>
+<ul>
+<li>Direct table entry with configurable columns and optional maximum
+rows</li>
+<li>View CSV-encoded content with add row button click</li>
+<li>You can add a row with shift+enter key</li>
+<li>When a new row is added the focus is set to the first cell in the
+row</li>
+<li>Fallback to a plain textarea if JavaScript is unavailable</li>
+</ul>
+<h2 id="setup">Setup</h2>
+<ol type="1">
+<li>Include the Component JavaScript file and make it available to your
+HTML document</li>
+<li>Create an HTML file and include the web component in the markup</li>
+<li>If you’re use it in a web form make sure you add a “submit” handle
+for the form to package up the CSV data to submit along with the rest of
+the form data.</li>
+</ol>
+<p>The web component is contained in a file calleed <a
+href="csvtextarea.js">csvtextarea.js</a>.</p>
+<p>Here is an example of the HTML markup.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode html"><code class="sourceCode html"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;!DOCTYPE</span> html<span class="dt">&gt;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">html</span><span class="ot"> lang</span><span class="op">=</span><span class="st">&quot;en&quot;</span><span class="dt">&gt;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">head</span><span class="dt">&gt;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&lt;</span><span class="kw">meta</span><span class="ot"> charset</span><span class="op">=</span><span class="st">&quot;UTF-8&quot;</span><span class="dt">&gt;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&lt;</span><span class="kw">meta</span><span class="ot"> name</span><span class="op">=</span><span class="st">&quot;viewport&quot;</span><span class="ot"> content</span><span class="op">=</span><span class="st">&quot;width=device-width, initial-scale=1.0&quot;</span><span class="dt">&gt;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&lt;</span><span class="kw">title</span><span class="dt">&gt;</span>CSV Textarea<span class="dt">&lt;/</span><span class="kw">title</span><span class="dt">&gt;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&lt;</span><span class="kw">script</span><span class="ot"> src</span><span class="op">=</span><span class="st">&quot;csvtextarea.js&quot;</span><span class="ot"> defer</span><span class="dt">&gt;&lt;/</span><span class="kw">script</span><span class="dt">&gt;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&lt;</span><span class="kw">script</span><span class="dt">&gt;</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="bu">document</span><span class="op">.</span><span class="fu">addEventListener</span>(<span class="st">&#39;DOMContentLoaded&#39;</span><span class="op">,</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>      <span class="kw">const</span> csvTextarea <span class="op">=</span> <span class="bu">document</span><span class="op">.</span><span class="fu">querySelector</span>(<span class="st">&#39;csv-textarea&#39;</span>)<span class="op">;</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>      <span class="co">// Listen for change events on the csv-textarea</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>      csvTextarea<span class="op">.</span><span class="fu">addEventListener</span>(<span class="st">&#39;change&#39;</span><span class="op">,</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>        <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">&#39;CSV content changed:&#39;</span><span class="op">,</span> csvTextarea<span class="op">.</span><span class="at">innerHTML</span>)<span class="op">;</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>      })<span class="op">;</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>      <span class="co">// Listen for form submission</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>      <span class="bu">document</span><span class="op">.</span><span class="fu">querySelector</span>(<span class="st">&#39;form&#39;</span>)<span class="op">.</span><span class="fu">addEventListener</span>(<span class="st">&#39;submit&#39;</span><span class="op">,</span> (<span class="bu">event</span>) <span class="kw">=&gt;</span> {</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>        <span class="bu">event</span><span class="op">.</span><span class="fu">preventDefault</span>()<span class="op">;</span> <span class="co">// Prevent the form from submitting the traditional way</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>        <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">&#39;Form submitted with CSV content:&#39;</span><span class="op">,</span> csvTextarea<span class="op">.</span><span class="at">innerHTML</span>)<span class="op">;</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Here you can add code to handle the form submission, e.g., send data to a server</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>      })<span class="op">;</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    })<span class="op">;</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&lt;/</span><span class="kw">script</span><span class="dt">&gt;</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">head</span><span class="dt">&gt;</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">body</span><span class="dt">&gt;</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&lt;</span><span class="kw">form</span><span class="dt">&gt;</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&lt;</span><span class="kw">csv-textarea</span><span class="ot"> name</span><span class="op">=</span><span class="st">&quot;csvData&quot;</span><span class="ot"> rows</span><span class="op">=</span><span class="st">&quot;2&quot;</span><span class="ot"> column-headings</span><span class="op">=</span><span class="st">&quot;Name,Age,City&quot;</span><span class="dt">&gt;</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>      John,30,New York</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>      Jane,25,Los Angeles</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&lt;/</span><span class="kw">csv-textarea</span><span class="dt">&gt;</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&lt;</span><span class="kw">p</span><span class="dt">&gt;&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&lt;</span><span class="kw">button</span><span class="ot"> type</span><span class="op">=</span><span class="st">&quot;submit&quot;</span><span class="dt">&gt;</span>Submit<span class="dt">&lt;/</span><span class="kw">button</span><span class="dt">&gt;</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&lt;/</span><span class="kw">form</span><span class="dt">&gt;</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">body</span><span class="dt">&gt;</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">html</span><span class="dt">&gt;</span></span></code></pre></div>
+<p>The web component can be configured using following.</p>
+<dl>
+<dt>rows</dt>
+<dd>
+sets the number of rows used in the table
+</dd>
+<dt>columns</dt>
+<dd>
+sets the number of columns in the table
+</dd>
+<dt>readonly</dt>
+<dd>
+disable data entry
+</dd>
+<dt>column-headings</dt>
+<dd>
+holds a comma separate list of headings
+</dd>
+<dt>show-headings</dt>
+<dd>
+if set to false the column headings are not shown
+</dd>
+<dt>max-rows</dt>
+<dd>
+this sets a limit on the number of rows available
+</dd>
+</dl>
+<p>Example:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode html"><code class="sourceCode html"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">csv-textarea</span><span class="ot"> name</span><span class="op">=</span><span class="st">&quot;csvData&quot;</span><span class="ot"> rows</span><span class="op">=</span><span class="st">&quot;3&quot;</span><span class="ot"> column-headings</span><span class="op">=</span><span class="st">&quot;Name,Age,City&quot;</span><span class="ot"> max-rows</span><span class="op">=</span><span class="st">&quot;5&quot;</span><span class="dt">&gt;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>      John,30,New York</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>      Jane,25,Los Angeles</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">csv-textarea</span><span class="dt">&gt;</span></span></code></pre></div>
+<p>Using the Component:</p>
+<ul>
+<li>tabbing should let you step through each cell in each row</li>
+<li>shift+enter key will add a row, the focus will then be set to the
+first cell of the added row</li>
+<li>empty rows are ignored when updating the innerHTML of the
+element</li>
+<li>click the “Add Row” button to add a row, focus will be the first
+cell in the added row</li>
+</ul>
+<p>Submitted data:</p>
+<p>The Web Component tends to be ignored if you rely on the web browser
+to assemble the form data for submition to the action URL. You should
+add an event handle for the enter form listening for “submit”. When
+“submit” is fired your handle then can assemble the data in the form and
+use fetch to submit using the form’s method and action. The csv-textarea
+also has a “toJSON()” function. This will take the CSV data and turn it
+into an array of objects where attribute names correspond to the column
+headings. The can be more convient to work with server side.</p>
+</section>
+</body>
+</html>

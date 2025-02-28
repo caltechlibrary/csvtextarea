@@ -9,7 +9,7 @@ RELEASE_DATE = $(shell date +%Y-%m-%d)
 
 RELEASE_HASH=$(shell git log --pretty=format:'%h' -n 1)
 
-HTML_PAGES = $(shell find . -type f | grep -E '.html')
+HTML_PAGES = $(shell find . -type f | grep -E '.html$' | grep -v 'test?.html')
 
 DOCS = $(shell ls -1 *.?.md)
 
@@ -44,7 +44,7 @@ CITATION.cff: codemeta.json
 about.md: codemeta.json $(PROGRAMS)
 	cmt codemeta.json about.md
 
-website: clean-website .FORCE
+website: .FORCE
 	make -f website.mak
 
 status:
@@ -65,8 +65,5 @@ clean:
 	-rm *.bak >/dev/null
 	@if [ -d dist ]; then rm -fR dist; fi
 	@if [ -d testout ]; then rm -fR testout; fi
-
-clean-website:
-	@for FNAME in $(HTML_PAGES); do if [ -f "$${FNAME}" ]; then rm "$${FNAME}"; fi; done
 
 .FORCE:
