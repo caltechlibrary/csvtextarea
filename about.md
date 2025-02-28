@@ -16,8 +16,8 @@ contributor:
     orcid: https://github.com/mistralai/mistral-src
 
 
-repository_code: https://github.com/caltechlibrary/csv-textarea
-version: 0.0.0
+repository_code: https://github.com/caltechlibrary/csvtextarea
+version: 0.0.1
 
 
 programming_language:
@@ -25,13 +25,13 @@ programming_language:
   - HTML
 
 
-date_released: 2025-02-26
+date_released: 2025-02-27
 ---
 
 About this software
 ===================
 
-## csvtextarea 0.0.0
+## csvtextarea 0.0.1
 
 proof of concept
 
@@ -52,7 +52,7 @@ attributes in common with a traditional textarea and a textarea can be used as a
 The goal of this web component is to provide a simple mechanism for working with multivalued fields that easily map to a simple column and rows representation.
 
 
-- GitHub: <https://github.com/caltechlibrary/csv-textarea>
+- GitHub: <https://github.com/caltechlibrary/csvtextarea>
 
 
 ### Programming languages

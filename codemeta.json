@@ -1,7 +1,7 @@
 {
   "@context": "https://w3id.org/codemeta/3.0",
   "type": "SoftwareSourceCode",
-  "codeRepository": "https://github.com/caltechlibrary/csv-textarea",
+  "codeRepository": "https://github.com/caltechlibrary/csvtextarea",
   "author": [
     {
       "id": "https://orcid.org/0000-0003-0900-6903",
@@ -18,8 +18,8 @@
     }
   ],
   "dateCreated": "2025-02-26",
-  "dateModified": "2025-02-26",
-  "datePublished": "2025-02-26",
+  "dateModified": "2025-02-27",
+  "datePublished": "2025-02-27",
   "description": "CSVTextarea is a web component designed to work with tabular data. When you embed the element in a form or web page the innerHTML of the element was be treated as CSV data and then \ndisplayed in a table structure. If you use the component in a web form you may need to handle encoding and submission through the form's submit event handling. CSVTextarea has many \nattributes in common with a traditional textarea and a textarea can be used as a fall back if JavaScript or components are not available.\n\nThe goal of this web component is to provide a simple mechanism for working with multivalued fields that easily map to a simple column and rows representation.",
   "funder": "Caltech Library",
   "name": "csvtextarea",
@@ -32,7 +32,7 @@
     "Deno >= 2.2",
     "Firefox >= 135.0"
   ],
-  "version": "0.0.0",
+  "version": "0.0.1",
   "developmentStatus": "concept",
   "releaseNotes": "proof of concept"
 }
