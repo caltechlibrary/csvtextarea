@@ -12,7 +12,7 @@ The goal of this web component is to provide a simple mechanism for working with
 - status: wip
 - released: 2025-02-28
 
-working proof of concept. CSVTextarea now supports change event details for cells and the ability retrieve and set individual cell values. Several key combination can now be used to 
+Working proof of concept. CSVTextarea now supports change event details for cells and the ability retrieve and set individual cell values. Several key combination can now be used to 
 edit the table content. Ctrl-a in a cell will select the cell. Ctrl-Right Arrow will select a row. If you press the backspace key when you have text select the selected text will be 
 removed. The added clean up button now responds to shift+delete to cleanup the table.
 

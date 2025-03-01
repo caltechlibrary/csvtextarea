@@ -90,6 +90,24 @@ additional context for the component.</li>
 <li>Backspace: Delete selected text in each cell.</li>
 </ul></li>
 </ul></li>
+<li><strong>Form Submission</strong>:
+<ul>
+<li>Created the <code>submitHybridForm</code> function to handle form
+submissions using the <code>fetch</code> API.</li>
+<li>The function assembles all form elements into a
+<code>FormData</code> object, includes the CSV content from any
+<code>csv-textarea</code> elements used in the form, and submits the
+form data based on the form’s action and method.</li>
+<li>The response from <code>fetch</code> is passed to the callback
+function provided in the parameter.</li>
+</ul></li>
+<li><strong>Separate File for Form Submission</strong>:
+<ul>
+<li>Moved the <code>submitHybridForm</code> function to a separate file
+(<code>formHandler.js</code>) to ensure it can be used
+independently.</li>
+<li>Updated the HTML file to include the new script.</li>
+</ul></li>
 </ol>
 <p>These features and enhancements have been incrementally added based
 on your requirements and feedback, resulting in a robust and

@@ -42,4 +42,13 @@ Summary of the prompts and the key features we've developed for the `CSVTextarea
       - Ctrl + Right Arrow: Select all text in the current row.
       - Backspace: Delete selected text in each cell.
 
+11. **Form Submission**:
+    - Created the `submitHybridForm` function to handle form submissions using the `fetch` API.
+    - The function assembles all form elements into a `FormData` object, includes the CSV content from any `csv-textarea` elements used in the form, and submits the form data based on the form's action and method.
+    - The response from `fetch` is passed to the callback function provided in the parameter.
+
+12. **Separate File for Form Submission**:
+    - Moved the `submitHybridForm` function to a separate file (`formHandler.js`) to ensure it can be used independently.
+    - Updated the HTML file to include the new script.
+
 These features and enhancements have been incrementally added based on your requirements and feedback, resulting in a robust and user-friendly `CSVTextarea` component.
